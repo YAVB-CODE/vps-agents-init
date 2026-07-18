@@ -15,7 +15,7 @@ Scripts e instrucciones para inicializar un VPS y desplegar agentes autónomos c
 git clone <repo-url> /opt/vps-agents-init
 cd /opt/vps-agents-init
 
-# Solo preparar el VPS (update, git, usuario base)
+# Solo preparar el VPS (update, git, herramientas base)
 sudo ./bin/setup-vps
 
 # Instalar el agente Hermes completo (VPS + agente)
@@ -37,8 +37,8 @@ sudo ./bin/setup-agent hermes
 
 ## Flujo
 
-1. **`init/`** prepara el VPS: actualiza el sistema, instala git y herramientas base, crea usuario.
-2. **`agents/hermes/install.sh`** instala el runtime y despliega Hermes.
+1. **`init/`** prepara el VPS de forma genérica: actualiza el sistema e instala git y herramientas base. No configura ningún agente.
+2. **`agents/hermes/install.sh`** carga su propia `config.env`, instala el runtime y despliega Hermes como `root`.
 3. **Hermes** lee `bootstrap.md` y autoinstala skills, rules y guardrails en su entorno.
 
 ## Agente Hermes
@@ -51,19 +51,20 @@ Variables opcionales (ver `agents/hermes/config.env.example`):
 
 | Variable | Default | Descripción |
 |----------|---------|-------------|
-| `AGENT_USER` | `hermes` | Usuario del sistema para el agente |
+| `AGENT_NAME` | `hermes` | Nombre del agente |
 | `INSTALL_DIR` | `/opt/hermes` | Directorio de instalación |
 | `REPO_ROOT` | auto-detectado | Raíz de este repositorio |
 | `OBSIDIAN_VAULT_REPO` | — | Repositorio git del vault (memoria) |
 | `OBSIDIAN_VAULT_DIR` | `obsidian-vault` | Subcarpeta dentro de `INSTALL_DIR` |
 
+El agente corre como `root` (VPS autónomo con control total), por lo que no se crea ningún usuario dedicado.
+
 Estructura en el VPS tras instalar Hermes:
 
 ```text
 /opt/vps-agents-init/          ← bootstrap, skills, rules, guardrails
-/opt/hermes/                   ← runtime del agente
+/opt/hermes/                   ← runtime del agente (owner: root)
 /opt/hermes/obsidian-vault/    ← memoria persistente (Obsidian)
-/home/hermes/                  ← usuario del agente
 ```
 
 ## Logs

@@ -19,8 +19,6 @@ if [[ -f "$CONFIG_FILE" ]]; then
 fi
 
 AGENT_NAME="${AGENT_NAME:-hermes}"
-AGENT_USER="${AGENT_USER:-hermes}"
-AGENT_HOME="${AGENT_HOME:-/home/${AGENT_USER}}"
 INSTALL_DIR="${INSTALL_DIR:-/opt/hermes}"
 REPO_ROOT="${REPO_ROOT:-$(cd "${SCRIPT_DIR}/../.." && pwd)}"
 BOOTSTRAP_FILE="${BOOTSTRAP_FILE:-bootstrap.md}"
@@ -29,40 +27,24 @@ OBSIDIAN_VAULT_DIR="${OBSIDIAN_VAULT_DIR:-obsidian-vault}"
 VAULT_PATH="${INSTALL_DIR}/${OBSIDIAN_VAULT_DIR}"
 
 log_info "Instalando agente ${AGENT_NAME}"
-log_info "  Usuario:    ${AGENT_USER}"
-log_info "  Home:       ${AGENT_HOME}"
 log_info "  Install:    ${INSTALL_DIR}"
 log_info "  Vault:      ${VAULT_PATH}"
 log_info "  Repo:       ${REPO_ROOT}"
 log_info "  Bootstrap:  ${BOOTSTRAP_PATH}"
 
-# --- Usuario ---
-ensure_user "$AGENT_USER" "$AGENT_HOME"
-
 # --- Directorio de instalación ---
 mkdir -p "$INSTALL_DIR"
-chown "${AGENT_USER}:${AGENT_USER}" "$INSTALL_DIR"
 
-# --- Desplegar código del agente ---
-if [[ -n "${HERMES_REPO:-}" ]]; then
-  clone_or_update_repo "$AGENT_USER" "$HERMES_REPO" "$INSTALL_DIR" "${HERMES_BRANCH:-main}"
-else
-  log_warn "HERMES_REPO no configurado. Creando estructura base en ${INSTALL_DIR}."
-  mkdir -p "${INSTALL_DIR}/bin"
-  if [[ ! -f "${INSTALL_DIR}/bin/hermes" ]]; then
-    cat > "${INSTALL_DIR}/bin/hermes" << 'STUB'
-#!/usr/bin/env bash
-# Placeholder de Hermes — reemplazar cuando el repo esté disponible.
-echo "Hermes placeholder. Configura HERMES_REPO en config.env e reinstala."
-STUB
-    chmod +x "${INSTALL_DIR}/bin/hermes"
-    chown -R "${AGENT_USER}:${AGENT_USER}" "$INSTALL_DIR"
-  fi
-fi
+# --- Desplegar runtime de Hermes ---
+# Se instala mediante el instalador oficial de Nous Research.
+HERMES_INSTALL_URL="${HERMES_INSTALL_URL:-https://hermes-agent.nousresearch.com/install.sh}"
+log_info "Instalando runtime de Hermes desde ${HERMES_INSTALL_URL}"
+curl -fsSL "$HERMES_INSTALL_URL" | bash
+log_info "Runtime de Hermes instalado. El servicio lo gestiona el instalador oficial."
 
 # --- Vault de Obsidian (memoria persistente) ---
 if [[ -n "${OBSIDIAN_VAULT_REPO:-}" ]]; then
-  clone_or_update_repo "$AGENT_USER" "$OBSIDIAN_VAULT_REPO" "$VAULT_PATH" "${OBSIDIAN_VAULT_BRANCH:-main}"
+  clone_or_update_repo "$OBSIDIAN_VAULT_REPO" "$VAULT_PATH" "${OBSIDIAN_VAULT_BRANCH:-main}"
 else
   log_warn "OBSIDIAN_VAULT_REPO no configurado. Creando directorio vacío en ${VAULT_PATH}."
   mkdir -p "$VAULT_PATH"
@@ -74,10 +56,8 @@ Memoria persistente del agente ${AGENT_NAME}.
 
 Configura \`OBSIDIAN_VAULT_REPO\` en \`config.env\` y reinstala para clonar el repositorio remoto.
 EOF
-    chown "${AGENT_USER}:${AGENT_USER}" "${VAULT_PATH}/README.md"
   fi
 fi
-chown -R "${AGENT_USER}:${AGENT_USER}" "$VAULT_PATH"
 
 # --- Variables de entorno del agente ---
 ENV_FILE="${INSTALL_DIR}/.env"
@@ -92,36 +72,9 @@ GUARDRAILS_DIR=${REPO_ROOT}/guardrails
 VAULT_DIR=${VAULT_PATH}
 EOF
   chmod 600 "$ENV_FILE"
-  chown "${AGENT_USER}:${AGENT_USER}" "$ENV_FILE"
   log_info "Archivo .env creado en ${ENV_FILE}"
 else
   log_info "Archivo .env ya existe en ${ENV_FILE}"
-fi
-
-# --- Servicio systemd ---
-SERVICE_FILE="/etc/systemd/system/hermes.service"
-if [[ ! -f "$SERVICE_FILE" ]]; then
-  cat > "$SERVICE_FILE" << EOF
-[Unit]
-Description=Hermes Agent
-After=network.target
-
-[Service]
-Type=simple
-User=${AGENT_USER}
-WorkingDirectory=${INSTALL_DIR}
-EnvironmentFile=${ENV_FILE}
-ExecStart=${INSTALL_DIR}/bin/hermes
-Restart=on-failure
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target
-EOF
-  systemctl daemon-reload
-  log_info "Servicio systemd creado: hermes.service"
-else
-  log_info "Servicio systemd ya existe."
 fi
 
 # --- Verificar bootstrap ---
@@ -140,5 +93,6 @@ log_info "    ${REPO_ROOT}/guardrails/"
 log_info "  Usar como memoria persistente:"
 log_info "    ${VAULT_PATH}/"
 log_info ""
-log_info "Para iniciar el servicio:"
-log_info "  systemctl enable hermes && systemctl start hermes"
+log_info "El runtime y su servicio los gestiona el instalador oficial de Hermes."
+log_info "Si vas a usar el comando 'hermes' en esta sesión, recarga el PATH:"
+log_info "  source ~/.bashrc"

@@ -72,29 +72,20 @@ run_step() {
 load_config() {
   local config_file="$1"
   if [[ -f "$config_file" ]]; then
+    # Exporta todas las variables definidas en el archivo de configuración
+    # para que estén disponibles en subprocesos y en la generación del .env.
+    set -a
     # shellcheck source=/dev/null
     source "$config_file"
+    set +a
     log_info "Configuración cargada desde ${config_file}"
   fi
 }
 
-ensure_user() {
-  local username="$1"
-  local home_dir="$2"
-
-  if id "$username" &>/dev/null; then
-    log_info "Usuario ${username} ya existe."
-  else
-    useradd -m -d "$home_dir" -s /bin/bash "$username"
-    log_info "Usuario ${username} creado."
-  fi
-}
-
 clone_or_update_repo() {
-  local user="$1"
-  local repo_url="$2"
-  local target_dir="$3"
-  local branch="${4:-main}"
+  local repo_url="$1"
+  local target_dir="$2"
+  local branch="${3:-main}"
 
   if [[ -z "$repo_url" ]]; then
     log_warn "Repositorio no configurado, omitiendo clone en ${target_dir}."
@@ -105,11 +96,9 @@ clone_or_update_repo() {
 
   if [[ -d "${target_dir}/.git" ]]; then
     log_info "Repositorio ya clonado en ${target_dir}, actualizando..."
-    sudo -u "$user" git -C "$target_dir" pull origin "$branch"
+    git -C "$target_dir" pull origin "$branch"
   else
     log_info "Clonando ${repo_url} en ${target_dir}..."
-    sudo -u "$user" git clone --branch "$branch" "$repo_url" "$target_dir"
+    git clone --branch "$branch" "$repo_url" "$target_dir"
   fi
-
-  chown -R "${user}:${user}" "$target_dir"
 }

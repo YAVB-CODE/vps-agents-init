@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Wrapper: prepara el VPS (update, git, usuario base).
+# Wrapper: prepara el VPS (update, git, herramientas base).
 
 set -euo pipefail
 
