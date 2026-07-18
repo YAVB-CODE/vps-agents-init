@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Wrapper: prepara el VPS e instala un agente.
+# Uso: setup-agent <nombre>
+# Ejemplo: setup-agent hermes
+
+set -euo pipefail
+
+BIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${BIN_DIR}/.." && pwd)"
+
+# shellcheck source=../lib/common.sh
+source "${REPO_ROOT}/lib/common.sh"
+
+AGENT="${1:-}"
+
+if [[ -z "$AGENT" ]]; then
+  echo "Uso: setup-agent <nombre>"
+  echo ""
+  echo "Agentes disponibles:"
+  echo "  hermes"
+  exit 1
+fi
+
+INSTALL_SCRIPT="${REPO_ROOT}/agents/${AGENT}/install.sh"
+
+if [[ ! -f "$INSTALL_SCRIPT" ]]; then
+  die "Agente no encontrado: ${AGENT}. Script esperado en ${INSTALL_SCRIPT}"
+fi
+
+log_info "=== Fase 1: Preparar VPS ==="
+bash "${REPO_ROOT}/init/init-vps.sh"
+
+log_info "=== Fase 2: Instalar agente ${AGENT} ==="
+bash "$INSTALL_SCRIPT"
+
+log_info "=== Instalación completa ==="
+log_info "El agente ${AGENT} debe leer: ${REPO_ROOT}/bootstrap.md"

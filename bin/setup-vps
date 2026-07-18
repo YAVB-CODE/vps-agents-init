@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Wrapper: prepara el VPS (update, git, usuario base).
+
+set -euo pipefail
+
+BIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${BIN_DIR}/.." && pwd)"
+
+exec bash "${REPO_ROOT}/init/init-vps.sh" "$@"
