@@ -1,0 +1,14 @@
+# Configuración local con valores reales (nunca versionar)
+config.env
+agents/*/config.env
+
+# Secretos de servidores MCP
+.mcp.env
+mcp/.mcp.env
+
+# Archivos sensibles
+.env
+*.pem
+*.key
+credentials.json
+secrets.*

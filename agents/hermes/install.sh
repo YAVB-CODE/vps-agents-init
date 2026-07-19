@@ -44,7 +44,7 @@ log_info "Runtime de Hermes instalado. El servicio lo gestiona el instalador ofi
 
 # --- Vault de Obsidian (memoria persistente) ---
 if [[ -n "${OBSIDIAN_VAULT_REPO:-}" ]]; then
-  clone_or_update_repo "$OBSIDIAN_VAULT_REPO" "$VAULT_PATH" "${OBSIDIAN_VAULT_BRANCH:-main}"
+  clone_or_update_repo "$OBSIDIAN_VAULT_REPO" "$VAULT_PATH" "${OBSIDIAN_VAULT_BRANCH:-master}"
 else
   log_warn "OBSIDIAN_VAULT_REPO no configurado. Creando directorio vacío en ${VAULT_PATH}."
   mkdir -p "$VAULT_PATH"
