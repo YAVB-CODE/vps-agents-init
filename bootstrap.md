@@ -72,26 +72,6 @@ Al arrancar:
 
 Los cambios a las tareas se versionan en este repositorio; no las edites en caliente.
 
-## Servidores MCP
-
-La carpeta `mcp/` define los servidores MCP que el agente puede conectar:
-
-- `mcp/servers/*.conf` — una definición **declarativa** por servidor (nombre,
-  `AUTH_TYPE`, nombres de variables, comando de registro). No contiene secretos.
-- `mcp/install-mcp.sh` — menú interactivo que autentica cada servidor según su
-  `AUTH_TYPE` (`token` u `oauth`) y guarda los secretos en `MCP_SECRETS_FILE`
-  (por defecto `${INSTALL_DIR}/.mcp.env`, permisos `600`, fuera de git).
-- Wrapper: `bin/setup-mcp`.
-
-Puntos clave para un VPS **headless**:
-
-- El login OAuth se hace en la **máquina local** del operador (o por device flow);
-  al VPS solo llega el `token`/`refresh_token`, que se auto-renueva.
-- Los secretos nunca se versionan (ver `guardrails/no-secrets.md`); solo se
-  referencian por nombre.
-
-Al arrancar, verifica qué servidores MCP están configurados en `MCP_SECRETS_FILE`
-y repórtalo. Para conectar uno nuevo, ejecuta `bin/setup-mcp`.
 
 ## Criterio de éxito
 

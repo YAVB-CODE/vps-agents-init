@@ -20,9 +20,6 @@ sudo ./bin/setup-vps
 
 # Instalar el agente Hermes completo (VPS + agente)
 sudo ./bin/setup-agent hermes
-
-# Conectar servidores MCP (menú interactivo: Linear, Sentry, ...)
-./bin/setup-mcp
 ```
 
 ## Estructura
@@ -36,7 +33,6 @@ sudo ./bin/setup-agent hermes
 | `rules/` | Reglas de operación |
 | `guardrails/` | Restricciones y políticas de seguridad |
 | `tasks/` | Tareas recurrentes (recordatorios y acciones programadas) |
-| `mcp/` | Definición y autenticación de servidores MCP |
 | `lib/` | Funciones compartidas entre scripts |
 | `bin/` | Wrappers de alto nivel |
 
@@ -82,6 +78,5 @@ Los scripts escriben en `/var/log/vps-agents-init/`.
 - **Rules**: agregar archivos `.md` en `rules/`
 - **Guardrails**: agregar archivos `.md` en `guardrails/`
 - **Tasks**: agregar archivos `.md` en `tasks/` (una tarea recurrente por archivo, con bloque `## Metadatos`)
-- **MCP**: agregar archivos `.conf` en `mcp/servers/` (una definición por servidor); el menú `bin/setup-mcp` los descubre solo
 
 El agente los descubrirá al leer `bootstrap.md`. No es necesario modificar scripts de instalación.

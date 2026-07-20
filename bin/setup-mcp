@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-# Wrapper: abre el menú interactivo para instalar/autenticar servidores MCP.
-
-set -euo pipefail
-
-BIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${BIN_DIR}/.." && pwd)"
-
-exec bash "${REPO_ROOT}/mcp/install-mcp.sh" "$@"
