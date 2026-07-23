@@ -17,9 +17,8 @@ Al arrancar por primera vez, debes:
    - `./guardrails/` — límites, políticas y restricciones de seguridad
    - `./tasks/` — tareas recurrentes que debes programar en tu herramienta de recordatorio/scheduling
 3. Instalar cada archivo en las ubicaciones que correspondan a **tu** entorno.
-4. Conectar tu memoria persistente (vault de Obsidian) desde `VAULT_DIR` en tu `.env`.
-5. Programar cada tarea de `./tasks/` (ver sección "Tareas recurrentes").
-6. Confirmar que todo quedó activo antes de reportar que estás listo.
+4. Programar cada tarea de `./tasks/` con `activa: true` (ver sección "Tareas recurrentes").
+5. Confirmar que todo quedó activo antes de reportar que estás listo.
 
 ## Estructura del repositorio
 
@@ -28,23 +27,22 @@ vps-agents-init/
 ├── bootstrap.md    ← estás aquí
 ├── init/           ← scripts de infraestructura del VPS (no es tu responsabilidad)
 ├── agents/         ← scripts de instalación por agente
+├── optional/       ← addons opcionales (no forman parte del flujo base)
 ├── skills/         ← habilidades disponibles
 ├── rules/          ← reglas de operación
 ├── guardrails/     ← restricciones obligatorias
-└── tasks/          ← tareas recurrentes (recordatorios y acciones programadas)
+└── tasks/          ← tareas recurrentes del core
 ```
 
-## Memoria persistente
+## Addons opcionales
 
-Tu vault de Obsidian vive dentro de tu carpeta de agente (variable `VAULT_DIR` en tu `.env`, por defecto `/opt/<agente>/obsidian-vault`).
+Funcionalidad extra que **no se instala automáticamente**. Cada addon tiene su propio README e instalador.
 
-Úsalo para:
+| Addon | Ruta | Descripción |
+|-------|------|-------------|
+| Obsidian Vault | `optional/obsidian-vault/` | Memoria persistente con vault git en el home del agente |
 
-- Apuntes, contexto y decisiones entre sesiones
-- Notas que deben persistir más allá de una conversación
-- Referencias y conocimiento acumulado del entorno
-
-Lee y escribe en el vault como tu memoria de largo plazo. Los cambios deben committearse y pushearse al repositorio remoto cuando corresponda.
+Si el operador instaló un addon, sigue las instrucciones de su README antes de usarlo.
 
 ## Tareas recurrentes
 
@@ -70,6 +68,8 @@ Al arrancar:
 3. Sigue el `## Procedimiento` de cada tarea al ejecutarla.
 4. Respeta la política de `notificar`.
 
+Los addons pueden incluir sus propias tareas en `optional/<addon>/tasks/`. Solo prográmalas si el addon está instalado.
+
 Los cambios a las tareas se versionan en este repositorio; no las edites en caliente.
 
 
@@ -77,7 +77,6 @@ Los cambios a las tareas se versionan en este repositorio; no las edites en cali
 
 - Conoces el propósito del repo y tu rol dentro de él.
 - Cada skill, rule y guardrail está instalado en tu entorno.
-- Tu vault de Obsidian está accesible en `VAULT_DIR`.
 - Cada tarea activa de `tasks/` quedó programada en tu herramienta de recordatorio.
 - Puedes listarlos o verificar que están cargados.
 - Estás listo para recibir tareas.

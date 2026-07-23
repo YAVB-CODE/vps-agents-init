@@ -1,6 +1,8 @@
 # Configuración local con valores reales (nunca versionar)
 config.env
+init/config.env
 agents/*/config.env
+optional/*/config.env
 
 # Secretos de servidores MCP
 .mcp.env

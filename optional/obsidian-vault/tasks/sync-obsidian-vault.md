@@ -7,13 +7,15 @@
 - schedule: "0 2 * * *"        # cron: todos los días a las 02:00
 - zona_horaria: America/Bogota
 - notificar: solo-si-falla     # opciones: siempre | solo-si-falla | nunca
-- activa: true
+- activa: false
 
 ## Descripción
 
 Mantener sincronizado el vault de Obsidian (`VAULT_DIR`) con su repositorio git
 remoto, para que la memoria persistente del agente no se pierda y quede
 respaldada a diario.
+
+Requiere el addon instalado: `optional/obsidian-vault/install.sh`.
 
 ## Procedimiento
 

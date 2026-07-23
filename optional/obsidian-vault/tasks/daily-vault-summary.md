@@ -7,12 +7,14 @@
 - schedule: "0 7 * * *"        # cron: todos los días a las 07:00
 - zona_horaria: America/Bogota
 - notificar: siempre           # opciones: siempre | solo-si-falla | nunca
-- activa: true
+- activa: false
 
 ## Descripción
 
 Cada mañana a las 7 AM, enviar un resumen de la actividad del vault de Obsidian
 correspondiente al día anterior, para arrancar el día con contexto.
+
+Requiere el addon instalado: `optional/obsidian-vault/install.sh`.
 
 ## Procedimiento
 
